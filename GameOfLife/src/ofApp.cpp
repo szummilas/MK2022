@@ -3,24 +3,73 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-	ofSetFrameRate(10);
+	ofBackground(236);
+	cam.setFov(90);
+	cam.setPosition(500, 500, 900);
+	
 	grid.setup();
+
+	string guiName = "settings";
+	gui.setup(guiName);
+	gui.add(gui_options.setup("OPTIONS", ""));
+	gui.add(gui_fpsSlider.setup("FrameratePerSecond", 10, 1, 60));
+	gui.add(gui_probabilitySlider.setup("Probability", 0.5, 0.01, 0.99));
+	gui.add(gui_color.setup("COLOR", ""));
+	gui.add(gui_useOneColor.setup("Use One Color", false));
+	gui.add(color.set(ofColor::white));
+
+	isPaused = false;
+	ofSetFrameRate(gui_fpsSlider);
+
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 
-	grid.nextStep();
+	if (!isPaused) {
+
+		grid.nextStep(color.get());
+	}
+
+	if (grid.probability != gui_probabilitySlider) {
+		grid.probability = gui_probabilitySlider;
+		grid.setup();
+	}
+	
+	grid.isOneColor = gui_useOneColor;
+	ofSetFrameRate(gui_fpsSlider);
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 
+	gui.draw();
+
+	cam.begin();
+
 	grid.draw();
+
+	cam.end();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+
+	if (key == 'p') {
+		if (!isPaused) {
+			isPaused = true;
+		}
+		else {
+			isPaused = false;
+		}
+	}
+
+	if (key == 'r') {
+		if (grid.arr.size() != NULL) {
+			grid.setup();
+		}
+	}
 
 }
 

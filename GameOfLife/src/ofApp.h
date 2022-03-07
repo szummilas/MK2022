@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
 #include "game.h"
 
 class ofApp : public ofBaseApp{
@@ -22,7 +23,18 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
+		bool isPaused;
+		float temp_probability = 0.5;
+
 		Grid grid;
+		ofEasyCam cam;
 		
-		
+		ofxPanel gui;
+		ofxLabel gui_options;
+		ofxIntSlider gui_fpsSlider;
+		ofxFloatSlider gui_probabilitySlider;
+
+		ofxLabel gui_color;
+		ofxToggle gui_useOneColor;
+		ofParameter<ofColor> color;
 };

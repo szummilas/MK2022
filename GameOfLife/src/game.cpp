@@ -3,7 +3,7 @@
 void Grid::setup() {
 	for (int y = 0; y < 100; y++) {
 		for (int x = 0; x < 100; x++) {
-			arr[x][y].isAlive = ofRandomf() > 0.5 ? 1 : 0;
+			arr[x][y].isAlive = ofRandomf() > probability ? 1 : 0;
 		}
 	}
 }
@@ -30,13 +30,23 @@ int Grid::getNeighbours(int x, int y) {
 
 }
 
-void Grid::nextStep() {
+void Grid::nextStep(const ofColor& color) {
 
 	std::array<std::array<int, 100>, 100> arr_alive;
 
 	for (int y = 0; y < 100; y++) {
 		for (int x = 0; x < 100; x++) {
 			arr_alive[x][y] = getNeighbours(x, y);
+
+			arr[x][y].distance = glm::distance(center, glm::vec2(x, y));
+
+			if (!isOneColor) {
+				arr[x][y].color = ofColor(ofRandomf() * 10 * arr[x][y].distance, ofRandomf() * 10 * arr[x][y].distance, ofRandomf() * 10 * arr[x][y].distance, 100);
+			}
+			else {
+				arr[x][y].color = color + ofColor(0, 0, 0, 100);
+			}
+			
 		}
 	}
 
@@ -66,11 +76,11 @@ void Grid::draw() {
 	
 	for (int x = 0; x < 100; x++) {
 		for (int y = 0; y < 100; y++) {
-			ofSetColor(ofColor::ghostWhite);
+			ofSetColor(arr[x][y].color);
 			ofFill();
 			
 			if (arr[x][y].isAlive) {
-				ofDrawRectangle(x * 10, y * 10, 10, 10);
+				ofDrawBox(x * 10 - 0.5, y * 10 - 0.5, 0, 9.5, 9.5, 9.5);
 			}
 		}
 	}
